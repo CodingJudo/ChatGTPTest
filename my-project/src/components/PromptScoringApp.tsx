@@ -5,6 +5,23 @@ interface Prompt {
   score: number | null;
 }
 
+const getStyleByScore = (score: number | null) => {
+  if (score === null) return {};
+
+  let color = 'black'; // default color for no score or score = 0
+  if (score > 7) {
+    color = 'green';
+  } else if (score > 4) {
+    color = 'orange';
+  } else if (score > 0) {
+    color = 'red';
+  }
+
+  return {
+    color: color,
+  };
+};
+
 const PromptScoringApp: React.FC = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [newPrompt, setNewPrompt] = useState('');
@@ -31,9 +48,9 @@ const PromptScoringApp: React.FC = () => {
   };
 
   const handleScoreChange = (index: number, score: number) => {
-    const newPrompts = [...prompts];
-    newPrompts[index].score = score;
-    setPrompts(newPrompts);
+    const updatedPrompts = [...prompts];
+    updatedPrompts[index].score = score;
+    setPrompts(updatedPrompts);
   };
 
   return (
@@ -44,7 +61,7 @@ const PromptScoringApp: React.FC = () => {
           onChange={(e) => setNewPrompt(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              e.preventDefault();  // Prevent the default action of inserting a newline
+              e.preventDefault();
               handleAddPrompt();
             }
           }}
@@ -54,7 +71,7 @@ const PromptScoringApp: React.FC = () => {
 
       <ul>
         {prompts.map((prompt, index) => (
-          <li key={index}>
+          <li key={index} style={getStyleByScore(prompt.score)}>
             {prompt.text}
             <input
               type="number"
