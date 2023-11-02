@@ -23,9 +23,11 @@ const PromptScoringApp: React.FC = () => {
   }, [prompts]);
 
   const handleAddPrompt = () => {
-    const updatedPrompts = [...prompts, { text: newPrompt, score: null }];
-    setPrompts(updatedPrompts);
-    setNewPrompt('');
+    if (newPrompt.trim()) {
+      const updatedPrompts = [...prompts, { text: newPrompt, score: null }];
+      setPrompts(updatedPrompts);
+      setNewPrompt('');
+    }
   };
 
   const handleScoreChange = (index: number, score: number) => {
@@ -40,6 +42,12 @@ const PromptScoringApp: React.FC = () => {
         <textarea
           value={newPrompt}
           onChange={(e) => setNewPrompt(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();  // Prevent the default action of inserting a newline
+              handleAddPrompt();
+            }
+          }}
         />
         <button onClick={handleAddPrompt}>Add Prompt</button>
       </div>
